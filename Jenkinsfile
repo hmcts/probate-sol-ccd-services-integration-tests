@@ -1,13 +1,5 @@
 #!groovy
-@Library('Reform')
-import uk.gov.hmcts.Ansible
-import uk.gov.hmcts.Packager
-import uk.gov.hmcts.Versioner
-
-def triggers = []
-if (env.BRANCH_NAME == "master") {
-    triggers << cron('H H(0-3) * * *') //build to trigger sometime between midnight and 3am every day
-}
+@Library("Infrastructure") _
 
 properties(
         [
@@ -23,15 +15,6 @@ properties(
                 ])
         ]
 )
-
-//@Library(['Reform', 'PROBATE'])
-def ansible = new Ansible(this, 'probate')
-def packager = new Packager(this, 'probate')
-def versioner = new Versioner(this)
-
-def rpmTagger
-def app = "sol-ccd-services-integration-tests"
-def artifactorySourceRepo = "probate-local"
 
 node {
     try {
