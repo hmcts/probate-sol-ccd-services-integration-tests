@@ -1,5 +1,4 @@
 #!groovy
-@Library("Infrastructure") _
 
 properties(
         [
