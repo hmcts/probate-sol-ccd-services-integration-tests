@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.util.ResourceUtils;
-import uk.gov.hmcts.probate.SolCCDServiceAuthTokenGenerator;
+import uk.gov.hmcts.probate.SolCcdServiceAuthTokenGenerator;
 import uk.gov.hmcts.probate.TestContextConfiguration;
 
 import javax.annotation.PostConstruct;
@@ -15,26 +15,20 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 
+
 @ContextConfiguration(classes = TestContextConfiguration.class)
 @Component
 public class TestUtils {
 
     @Autowired
-    protected SolCCDServiceAuthTokenGenerator serviceAuthTokenGenerator;
+    protected SolCcdServiceAuthTokenGenerator solCcdServiceAuthTokenGenerator;
 
     private String serviceToken;
-    private String userId;
+
 
     @PostConstruct
     public void init() {
-        serviceToken = serviceAuthTokenGenerator.generateServiceToken();
-
-        userId = System.getenv().get("IDAM_USER_ID");
-
-        if (userId == null || userId.isEmpty()) {
-            serviceAuthTokenGenerator.createNewUser();
-            userId = serviceAuthTokenGenerator.getUserId();
-        }
+        serviceToken = solCcdServiceAuthTokenGenerator.generateServiceToken();
     }
 
     public String getJsonFromFile(String fileName) {
@@ -58,13 +52,22 @@ public class TestUtils {
     }
 
     public Headers getHeadersWithUserId() {
-        return getHeadersWithUserId(serviceToken, userId);
+        return getHeadersWithUserId(serviceToken);
     }
 
-    public Headers getHeadersWithUserId(String serviceToken, String userId) {
+    public Headers getHeadersWithUserId(String serviceToken) {
         return Headers.headers(
                 new Header("ServiceAuthorization", serviceToken),
                 new Header("Content-Type", ContentType.JSON.toString()),
-                new Header("user-id", userId));
+                new Header("Authorization", solCcdServiceAuthTokenGenerator.generateUserTokenWithNoRoles()));
+
+
     }
+
+    public int getUserId() {
+        return solCcdServiceAuthTokenGenerator.getUserId();
+    }
+
+
+
 }

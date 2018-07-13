@@ -1,6 +1,7 @@
 package uk.gov.hmcts.probate;
 
 import io.restassured.RestAssured;
+import io.restassured.parsing.Parser;
 import net.thucydides.junit.spring.SpringIntegration;
 import org.junit.Rule;
 import org.junit.runner.RunWith;
@@ -15,29 +16,19 @@ import uk.gov.hmcts.probate.util.TestUtils;
 public abstract class IntegrationTestBase {
 
     @Autowired
-    protected SolCCDServiceAuthTokenGenerator serviceAuthTokenGenerator;
+    protected SolCcdServiceAuthTokenGenerator solCcdServiceAuthTokenGenerator;
 
-    @Autowired
-    protected TestUtils utils;
+    protected TestUtils testUtils;
 
     private String solCcdServiceUrl;
-    public static String evidenceManagementUrl;
 
     @Autowired
-    public void solCcdServiceUrl(@Value("${sol.ccd.service.base.url}") String solCcdServiceUrl) {
+    public void solCcdServiceUrl(@Value("${ccd.data.store.api.url}") String solCcdServiceUrl) {
         this.solCcdServiceUrl = solCcdServiceUrl;
         RestAssured.baseURI = solCcdServiceUrl;
+        RestAssured.defaultParser = Parser.JSON;
     }
 
-    @Autowired
-    public void evidenceManagementUrl(@Value("${evidence.management.url}") String evidenceManagementUrl) {
-        this.evidenceManagementUrl = evidenceManagementUrl;
-
-    }
-
-    public static void setEvidenceManagementUrlAsBaseUri() {
-        RestAssured.baseURI = evidenceManagementUrl;
-    }
 
     @Rule
     public SpringIntegration springIntegration;
