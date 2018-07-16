@@ -14,7 +14,7 @@ import uk.gov.hmcts.reform.authorisation.generators.ServiceAuthTokenGenerator;
 
 @Configuration
 @ComponentScan("uk.gov.hmcts.probate")
-@PropertySource("file:src/resources/application.properties")
+@PropertySource("classpath:application.properties")
 public class TestContextConfiguration {
 
     @Bean
